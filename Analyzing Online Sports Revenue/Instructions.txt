@@ -1,0 +1,7 @@
+Project Instructions
+In order to complete the project you will need to merge the datasets and drop null values, along with answering the questions below.
+
+What is the volume of products and average revenue for Adidas and Nike products based on listing price quartiles?
+
+Label products priced up to quartile one as "Budget", quartile two as "Average", quartile three as "Expensive", and quartile four as "Elite".
+Store as a pandas DataFrame called adidas_vs_nike containing the following columns: "brand", "price_label", "num_products", and "mean_revenue". All numeric values should be rounded to two decimal places.
