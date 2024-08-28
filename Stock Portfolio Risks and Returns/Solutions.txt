@@ -1,0 +1,107 @@
+# Importing libraries
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+from pypfopt.efficient_frontier import EfficientFrontier
+from pypfopt import risk_models
+from pypfopt import expected_returns
+
+# Setting the plotting style to be colorblind-friendly
+plt.style.use("seaborn-colorblind")
+
+# Loading data
+stock_prices_df = pd.read_csv("faang_stocks.csv", index_col="Date")
+
+# Changing the index to a datetime type allows for easier filtering and plotting.
+stock_prices_df.index = pd.to_datetime(stock_prices_df.index)
+stock_prices_df
+
+# Task 1 ---------------------------------------------------
+
+# Calculate returns
+returns_df = stock_prices_df.pct_change().dropna()
+
+# Calculate the 1/n portfolio weights
+portfolio_weights = 5 * [0.2]
+
+# Calculate the portfolio returns of the 1/n portfolio
+portfolio_returns = returns_df.dot(portfolio_weights)
+
+# Calculate the expected portfolio return
+benchmark_exp_return = portfolio_returns.mean()
+
+# Calculate the portfolio's Sharpe ratio
+benchmark_sharpe_ratio = (
+    portfolio_returns.mean() / portfolio_returns.std() * np.sqrt(252)
+)
+
+# Task 2 ---------------------------------------------------
+
+# Calculate the annualized expected returns and the covariance matrix
+avg_returns = returns_df.mean() * 252
+cov_mat = returns_df.cov() * 252
+
+# Instantiate the EfficientFrontier object
+ef = EfficientFrontier(avg_returns, cov_mat)
+
+# Find the weights that maximize the Sharpe ratio
+weights = ef.min_volatility()
+mv_portfolio = pd.Series(weights)
+
+# Find the minimized volatility
+mv_portfolio_vol = ef.portfolio_performance(risk_free_rate=0)[1]
+
+# Task 2 - alternative solution ----------------------------
+
+# # Calculate the annualized expected returns and the covariance matrix
+# avg_returns = returns_df.mean() * 252
+# cov_mat = returns_df.cov() * 252
+
+# # Define the function to find the portfolio volatility using the weights and the covariance matrix
+# def get_portfolio_volatility(weights, cov_mat):
+#     return np.sqrt(np.dot(weights.T, np.dot(cov_mat, weights)))
+  
+# # Define the number of assets
+# n_assets = len(avg_returns)
+
+# # Define the bounds - the weights can be between 0 and 1
+# bounds = tuple((0, 1) for asset in range(n_assets))
+
+# # Define the initial guess - the equally weighted portfolio
+# initial_guess = n_assets * [1.0 / n_assets]
+
+# # Define the constraint - all weights must add up to 1
+# constr = {"type": "eq", "fun": lambda x: np.sum(x) - 1}
+
+# # Find the minimum volatility portfolio
+# result = sco.minimize(
+#     get_portfolio_volatility,
+#     x0=initial_guess,
+#     args=cov_mat,
+#     method="SLSQP",
+#     constraints=constr,
+#     bounds=bounds,
+# )
+
+# # Store the portfolio weights
+# mv_portfolio = pd.Series(result.x, index=avg_returns.index).round(2)
+
+# # Store the portfolio's volatility
+# mv_portfolio_vol = result.fun
+
+# Task 3 ---------------------------------------------------
+
+# Alternative approach to get the expected returns and the covariance matrix
+# avg_returns = expected_returns.mean_historical_return(stock_prices_df, compounding=False)
+# cov_mat = risk_models.sample_cov(stock_prices_df)
+
+# Instantiate the EfficientFrontier object
+ef = EfficientFrontier(avg_returns, cov_mat)
+
+# Find the weights that maximize the Sharpe ratio
+weights = ef.max_sharpe(risk_free_rate=0)
+ms_portfolio = pd.Series(weights)
+
+# Find the maximized Sharpe ratio
+ms_portfolio_sharpe = ef.portfolio_performance(risk_free_rate=0)[2]
