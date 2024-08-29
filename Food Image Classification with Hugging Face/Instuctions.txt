@@ -1,0 +1,5 @@
+The social media company hired you to help them perform image classification to identify food categories. A sample image has been provided in the Food Pictures directory. You start by finding answers to the following questions:
+
+What model would you use for this image classification task? Search for a Hugging Face model suitable for the task and use it to get the probabilities of different food categories corresponding to the sample image provided. Store the result in a list of dictionaries named class_scores, containing the food categories and their probability.
+
+Classify the sample food image: identify the label of the food category with the highest probability for the uploaded image. Store the result as a string named highest_probability_class.

@@ -1,0 +1,4 @@
+Address the challenges faced in modern transportation systems using Keras.
+
+Define and train an object detection model to identify traffic signs and lights. Save the training accuracy in a variable named accuracy.
+Only run your training loop for 20 epochs due to the small size of the training data.
