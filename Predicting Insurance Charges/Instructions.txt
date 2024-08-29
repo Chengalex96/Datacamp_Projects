@@ -1,0 +1,5 @@
+Develop a regression model using the insurance.csv dataset to predict charges. Evaluate the model's accuracy with the R-Squared Score. Then, apply the model to estimate predicted_charges for unseen data in validation_dataset.csv.
+
+Build a regression model to predict charges using the insurance.csv dataset. Evaluate the R-Squared Score of your trained model and save it as a variable called r2_score. The model's success will be assessed based on its R-Squared Score, which must exceed a threshold of 0.65.
+
+Use the trained model to predict charges for the data in validation_dataset.csv. Store the predictions as a new column in the validation dataset called predicted_charges, saving as a pandas DataFrame called validation_data. If needed, handle any negative values by replacing them with the minimum basic charge, set at 1000.
